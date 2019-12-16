@@ -79,6 +79,9 @@ describe('PathientService', () => {
   });
 
   it('first name is missing', () => {
+    if (!uploadData) {
+      return;
+    }
     const msg = uploadPathient.reduce((acc: any, el: any, i: number) => {
       if (el.firstName.trim() === '') {
         acc.push(`Row # ${i}: missing first name`);
@@ -89,6 +92,9 @@ describe('PathientService', () => {
   });
 
   it('Email address is missing but consent is Y ', () => {
+    if (!uploadData) {
+      return;
+    }
     const msg = uploadEmail.reduce((acc: any, el: any, i: number) => {
       const consent = (el.consent as string).trim().toLowerCase();
       if (el.emailAddress.trim() === '' && (consent === 'yes' || consent === 'y')) {
@@ -100,6 +106,9 @@ describe('PathientService', () => {
   });
 
   it('Verify Emails for consent is Y ', () => {
+    if (!uploadData) {
+      return;
+    }
     const validator = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const msg = uploadEmail.reduce((acc: any, el: any, i: number) => {
       const consent = (el.consent as string).trim().toLowerCase();
