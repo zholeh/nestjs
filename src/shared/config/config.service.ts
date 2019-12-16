@@ -10,7 +10,7 @@ export class ConfigService {
   constructor() {
     const filePath = `${process.env.NODE_ENV || 'development'}.env`;
     this.envConfig = dotenv.parse(
-      fs.readFileSync(Path.join(__dirname,'/../../../config/', filePath),
+      fs.readFileSync(Path.join(__dirname,'/../../../config/', filePath)),
     );
   }
 
