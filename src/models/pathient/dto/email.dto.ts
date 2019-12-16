@@ -10,6 +10,7 @@ export interface PathientEmails {
   EmailAddress?: string;
   pathientId?: string;
   consent?: Consent;
+  day?: string;
 }
 
 export interface PathientEmailsDoc extends Document, PathientEmails {}
@@ -18,14 +19,14 @@ export const PathienEmailsSchema = new Schema({
   emailAddress: String,
   pathientId: { type: 'ObjectId', ref: Models.pathient.name },
   consent: String,
-  data: Date,
+  day: String,
 });
 
-export class PathientDto implements PathientEmails {
+export class PathientEmailDto implements PathientEmails {
   @ApiPropertyOptional()
   emailAddress?: string;
   @ApiPropertyOptional()
   consent?: Consent;
   @ApiPropertyOptional()
-  data?: string;
+  day?: string;
 }

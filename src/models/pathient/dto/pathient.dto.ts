@@ -16,6 +16,7 @@ export interface Pathient {
   zipCode?: string;
   telephoneNumber?: string;
   mobilePhone?: string;
+  day?: string;
 }
 
 export interface PathientDoc extends Document, Pathient {}
@@ -36,16 +37,12 @@ export const PathientSchema = new Schema(
     zipCode: String,
     telephoneNumber: String,
     mobilePhone: String,
+    day: String,
   },
   {
     timestamps: true,
   },
 );
-
-export const PathienEmailsSchema = new Schema({
-  emailAddress: String,
-  consent: String,
-});
 
 export class PathientDto implements Pathient {
   @ApiPropertyOptional()
@@ -76,4 +73,6 @@ export class PathientDto implements Pathient {
   telephoneNumber?: string;
   @ApiPropertyOptional()
   mobilePhone?: string;
+  @ApiPropertyOptional()
+  day?: string;
 }

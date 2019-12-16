@@ -1,4 +1,4 @@
-import { Model, Document, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PathientDoc, PathientDto, Pathient } from './dto/pathient.dto';
@@ -7,6 +7,11 @@ import { PathientEmailsDoc } from './dto/email.dto';
 
 interface StrObject {
   [key: string]: string;
+}
+
+interface PathientData {
+  file: string;
+  data: string;
 }
 
 @Injectable()
@@ -50,7 +55,7 @@ export class PathientService {
     'Zip code': 'zipCode',
     'Telephone number': 'telephoneNumber',
     'Email Address': 'emailAddress',
-    CONSENT: 'CONSENT',
+    CONSENT: 'consent',
     'Mobile Phone': 'mobilePhone',
   } as StrObject;
   // tslint:enable: object-literal-key-quotes
@@ -59,7 +64,7 @@ export class PathientService {
     return this.pathientsDataSynonyms[columnSynonym] || '';
   }
 
-  async uploadFromString(data: string): Promise<boolean> {
+  private async uploadDay({ file: day, data }: PathientData): Promise<boolean> {
     const arr = data.split(/\r?\n/).map(el => el.split('|'));
     const err = this.validateUploadingData(arr);
     if (err) {
@@ -73,18 +78,17 @@ export class PathientService {
     const { pathients: pathientsData, emails: emailsData } = arr.reduce(
       (acc, el, i) => {
         if (i !== 0) {
-          const pathientData = el.reduce(
-            (accPathient, elPathient, iPathient) => {
-              accPathient[header[iPathient]] = elPathient;
-              return accPathient;
-            },
-            {} as any,
-          );
+          const pathientData = el.reduce((accPathient, elPathient, iPathient) => {
+            accPathient[header[iPathient]] = elPathient;
+            return accPathient;
+          }, {} as any);
           const pathients = new this.pathientModel(pathientData);
+          pathients.day = day;
           acc.pathients.push(pathients);
 
           const emails = new this.emailModel(pathientData);
           emails.pathientId = pathients._id;
+          emails.day = day;
           acc.emails.push(emails);
         }
 
@@ -93,10 +97,7 @@ export class PathientService {
       { pathients: [] as PathientDoc[], emails: [] as PathientEmailsDoc[] },
     );
 
-    return Promise.all([
-      this.pathientModel.insertMany(pathientsData),
-      this.emailModel.insertMany(emailsData),
-    ])
+    return Promise.all([this.pathientModel.insertMany(pathientsData), this.emailModel.insertMany(emailsData)])
       .then((res: any[]) => {
         return true;
       })
@@ -104,21 +105,28 @@ export class PathientService {
         throw error;
       });
   }
+  public async uploadFromString(data: PathientData[]): Promise<boolean> {
+    let res = true;
+    for (const iterator of data) {
+      res = (await this.uploadDay(iterator)) === true && res ? true : false;
+    }
+    return true;
+  }
 
-  async create(pathientDto: PathientDto): Promise<PathientDoc> {
+  public async create(pathientDto: PathientDto): Promise<PathientDoc> {
     const createdPathient = new this.pathientModel(pathientDto);
 
     return await createdPathient.save();
   }
 
-  async findAll(): Promise<PathientDoc[]> {
+  public async findAll(): Promise<PathientDoc[]> {
     return await this.pathientModel
       .find()
       .lean()
       .exec();
   }
 
-  async findOne(filter?: Pathient): Promise<PathientDoc | null> {
+  public async findOne(filter?: Pathient): Promise<PathientDoc | null> {
     const user = await this.pathientModel
       .findOne(filter)
       .lean()

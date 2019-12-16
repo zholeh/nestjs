@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PathientController } from './pathient.controller';
 import { DatabaseModule } from '../../database/database.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PathientSchema, PathienEmailsSchema } from './dto/pathient.dto';
+import { PathientSchema } from './dto/pathient.dto';
 import { PathientService } from './pathient.service';
 import { Models } from '../../shared/const';
+import { PathienEmailsSchema } from './dto/email.dto';
 
 describe('Pathient Controller', () => {
   let controller: PathientController;
