@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import * as Path from 'path';
 
 @Injectable()
 export class ConfigService {
@@ -9,7 +10,7 @@ export class ConfigService {
   constructor() {
     const filePath = `${process.env.NODE_ENV || 'development'}.env`;
     this.envConfig = dotenv.parse(
-      fs.readFileSync(`${__dirname}\\..\\..\\..\\config\\${filePath}`),
+      fs.readFileSync(Path.join(__dirname,'/../../../config/', filePath),
     );
   }
 
