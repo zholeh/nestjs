@@ -6,8 +6,8 @@ import { PathientDto, Pathient } from './dto/pathient.dto';
 export class PathientController {
   constructor(private readonly pathientService: PathientService) {}
   @Post()
-  async create(@Body() createUsersDto: PathientDto) {
-    this.pathientService.create(createUsersDto);
+  async create(@Body() pathientDto: PathientDto) {
+    this.pathientService.create(pathientDto);
   }
 
   @Get('all')

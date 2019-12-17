@@ -3,6 +3,7 @@ import { Models } from '../../../shared/const';
 import { PathienEmailsSchema } from '../dto/email.dto';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EmailService } from './email.service';
+import { EmailController } from './email.controller';
 
 @Module({
   imports: [
@@ -11,5 +12,6 @@ import { EmailService } from './email.service';
     ]),
   ],
   providers: [EmailService],
+  controllers: [EmailController],
 })
 export class EmailModule {}

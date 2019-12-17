@@ -1,7 +1,6 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PathientDoc, PathientDto, Pathient } from '../dto/pathient.dto';
 import { Models } from '../../../shared/const';
 import { PathientEmailsDoc, PathientEmailDto, PathientEmails } from '../dto/email.dto';
 
@@ -13,16 +12,18 @@ export class EmailService {
   ) {}
 
   public async create(emailDto: PathientEmailDto): Promise<PathientEmailsDoc> {
-    const createdEmail = new this.emailModel(PathientEmailDto);
+    const createdEmail = new this.emailModel(emailDto);
 
     return await createdEmail.save();
   }
 
   public async findAll(): Promise<PathientEmailsDoc[]> {
-    return await this.emailModel
+    const res = await this.emailModel
       .find()
       .lean()
       .exec();
+
+    return res;
   }
 
   public async findOne(filter?: PathientEmails): Promise<PathientEmailsDoc | null> {
